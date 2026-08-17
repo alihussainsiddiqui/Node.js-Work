@@ -1,30 +1,30 @@
 const http = require("http");
-const PORT = 3000;
 const fs = require("fs");
-const server = http.createServer((req,res)=>{
-    if(req.url === "/"){
-        res.setHeader("Content-Type", "text/plain");
-        res.write("Home");
-        res.end();
-    }
-    else if(req.url === "/about"){
-        res.setHeader("Content-Type", "text/plain");
-        res.write("About");
-        res.end();
-    }
-    else if (req.url === "/api/data"){
-        fs.readFile(`${__dirname}/jsonData/data.json`, "utf-8", (err,data)=>{
-            if (err){
-                res.writeHead(500, {"Content-Type":"text/plain"})
-                res.write("Internal Server Error");
-            }
-            else{
-                res.writeHead(200,{"Content-Type":"application/json"});
-                res.end(data);
-            }
-        })
-    }
-})
-server.listen(PORT, ()=>{
-    console.log(`Server is running on port ${PORT}`)
+
+const server = http.createServer((req,res) => {
+if (req.url === "/" || req.url === "/home" || req.url === "/index") {
+    res.writeHead(200,{'Content-Type':'text/html'});
+    fs.createReadStream(__dirname + '/index.html').pipe(res);
+}
+else if (req.url === "/about") {
+    res.writeHead(200,{'Content-Type':'text/html'});
+    fs.createReadStream(__dirname + '/about.html').pipe(res);
+}
+else if (req.url === "/services") {
+    res.writeHead(200,{'Content-Type':'text/html'});
+    fs.createReadStream(__dirname + '/services.html').pipe(res);
+}
+else if (req.url === "/contact") {
+    res.writeHead(200,{'Content-Type':'text/html'});
+    fs.createReadStream(__dirname + '/contact.html').pipe(res);
+}
+else{
+    res.writeHead(404,{'Content-Type':'text/html'});
+    fs.createReadStream(__dirname + '/404.html').pipe(res);
+}
+});
+
+
+server.listen(3000, () => {
+    console.log("server is running on port 3000");
 })
